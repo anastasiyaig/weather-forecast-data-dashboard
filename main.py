@@ -15,23 +15,25 @@ option = st.selectbox("Select data to view",
 st.subheader(f"{option} for the next {days} day(s) in {city}")
 
 if city:
-    filtered_data = get_data(city=city, days=days)
-
-    match option:
-        case "Temperature":
-            temperatures = [(int(item["main"]["temp"])-273.15) for item in filtered_data]
-            dates = [item["dt_txt"] for item in filtered_data]
-            figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature (C)"})
-            st.plotly_chart(figure)
-        case "Sky":
-            images = {
-                "Clear": "images/clear.png",
-                "Clouds": "images/cloud.png",
-                "Rain": "images/rain.png",
-                "Snow": "images/snow.png"
-            }
-            sky_conditions = [item["weather"][0]["main"] for item in filtered_data]
-            image_paths = [images[condition] for condition in sky_conditions]
-            st.image(image_paths, width=150)
+    try:
+        filtered_data = get_data(city=city, days=days)
+        match option:
+            case "Temperature":
+                temperatures = [(int(item["main"]["temp"])-273.15) for item in filtered_data]
+                dates = [item["dt_txt"] for item in filtered_data]
+                figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature (C)"})
+                st.plotly_chart(figure)
+            case "Sky":
+                images = {
+                    "Clear": "images/clear.png",
+                    "Clouds": "images/cloud.png",
+                    "Rain": "images/rain.png",
+                    "Snow": "images/snow.png"
+                }
+                sky_conditions = [item["weather"][0]["main"] for item in filtered_data]
+                image_paths = [images[condition] for condition in sky_conditions]
+                st.image(image_paths, width=150)
+    except KeyError:
+        st.write("This city does not exist")
 
 
