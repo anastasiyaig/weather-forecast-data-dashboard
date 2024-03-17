@@ -19,7 +19,7 @@ if city:
 
     match option:
         case "Temperature":
-            temperatures = [item["main"]["temp"] for item in filtered_data]
+            temperatures = [(int(item["main"]["temp"])-273.15) for item in filtered_data]
             dates = [item["dt_txt"] for item in filtered_data]
             figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperature (C)"})
             st.plotly_chart(figure)
